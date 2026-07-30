@@ -1,4 +1,4 @@
-﻿# RentoX
+﻿# Rento
 
 A full-stack Vehicle Rental Management System for tracking fleets, handling customer
 reservations, managing drivers, and recording rental payments.
