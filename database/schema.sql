@@ -42,4 +42,10 @@ CREATE TABLE IF NOT EXISTS payments (
     status VARCHAR(50) NOT NULL
 );
 
+INSERT INTO customer (first_name, last_name, email, phone, driver_license_number, address) 
+VALUES
+('John', 'Doe', 'john.doe@example.com', '0771234567', 'B1234567', '123 Main Street, Cityville'),
+('Jane', 'Smith', 'jane.smith@example.com', '0719876543', 'B9876543', '456 Oak Avenue, Townsburg'),
+('Michael', 'Johnson', 'michael.j@example.com', '0724567890', 'B4567890', '789 Pine Road, Villagetown');
+
 INSERT INTO categories (name) VALUES ('Sedan'), ('SUV'), ('Van');
