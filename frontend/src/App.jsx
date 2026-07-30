@@ -12,6 +12,7 @@ import RentForm from './pages/public/RentForm.jsx'
 import MyBookings from './pages/public/MyBookings.jsx'
 
 // Staff area
+
 import StaffLogin from './pages/Login.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import CustomerList from './pages/customers/CustomerList.jsx'
@@ -24,7 +25,7 @@ import DriverList from './pages/drivers/DriverList.jsx'
 import DriverForm from './pages/drivers/DriverForm.jsx'
 import BookingList from './pages/bookings/BookingList.jsx'
 import BookingForm from './pages/bookings/BookingForm.jsx'
-import BookingDetail from './pages/bookings/BookingDetail.jsx'
+import BookingDetail from "./pages/bookings/BookingDetails.jsx";
 import PaymentList from './pages/payments/PaymentList.jsx'
 import PaymentForm from './pages/payments/PaymentForm.jsx'
 
