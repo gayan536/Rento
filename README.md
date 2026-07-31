@@ -17,7 +17,7 @@ No Docker, no external APIs, no payment gateways.
 | 3   |              |            | Vehicle Management          |
 | 4   |              |            | Driver Management           |
 | 5   |              |            | Booking Management          |
-| 6   |              |            | Payment Management          |
+| 6   | A.A.T.K.P. Amarasinghe| s17212 | Payment Management     |
 
 _Fill in names and IDs before submission._
 
