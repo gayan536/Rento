@@ -1,6 +1,7 @@
-﻿// placeholder
-<<<<<<< HEAD
-=======
+
+
+
+
 package com.rento.controller;
 
 import com.rento.model.Vehicle;
@@ -46,4 +47,7 @@ public class VehicleController {
         return ResponseEntity.noContent().build();
     }
 }
->>>>>>> 0101480 (Add Vehicle CRUD implementation)
+
+
+﻿
+

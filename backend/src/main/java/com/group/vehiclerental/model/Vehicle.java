@@ -1,6 +1,6 @@
-﻿// placeholder
-<<<<<<< HEAD
-=======
+
+
+
 package com.rento.model;
 
 import jakarta.persistence.*;
@@ -44,4 +44,4 @@ public class Vehicle {
     @JoinColumn(name = "category_id")
     private VehicleCategory category;
 }
->>>>>>> 0101480 (Add Vehicle CRUD implementation)
+
