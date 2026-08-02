@@ -37,10 +37,19 @@ export default function BookingList() {
       .catch((err) => setError(parseError(err).message))
   }
 
-  const confirmDelete = () => {
+  /**
+   * Cancelling keeps the booking and its payment history - it only moves the
+   * status, which is what the customer sees on their My Bookings page. The
+   * server frees the vehicle again as part of the same change.
+   */
+  const confirmCancel = () => {
     setBusy(true)
-    bookingApi.remove(target.bookingId)
-      .then(() => { setNotice(`Booking #${target.bookingId} was cancelled and removed.`); setTarget(null); load() })
+    bookingApi.setStatus(target.bookingId, 'CANCELLED')
+      .then(() => {
+        setNotice(`Booking #${target.bookingId} was cancelled. ${target.customer?.fullName ?? 'The customer'} will see it as cancelled under My Bookings.`)
+        setTarget(null)
+        load()
+      })
       .catch((err) => { setError(parseError(err).message); setTarget(null) })
       .finally(() => setBusy(false))
   }
@@ -98,9 +107,8 @@ export default function BookingList() {
       <div className="page-head">
         <div>
           <h1>Bookings</h1>
-          <p>Rental bookings. The total is calculated by the server from the dates and rates.</p>
+          <p>Rental bookings, placed by customers.</p>
         </div>
-        <Link to="/staff/bookings/new" className="btn btn-primary">+ New Booking</Link>
       </div>
 
       <Alert kind="error" onClose={() => setError('')}>{error}</Alert>
@@ -132,12 +140,13 @@ export default function BookingList() {
           loading={loading}
           rowKey={(b) => b.bookingId}
           emptyTitle="No bookings found"
-          emptyText="Adjust the filters, or create a new booking."
+          emptyText="Adjust the filters — bookings arrive when customers rent a vehicle."
           actions={(b) => (
             <>
               <button className="btn-link" onClick={() => navigate(`/staff/bookings/${b.bookingId}`)}>View</button>
-              <button className="btn-link" onClick={() => navigate(`/staff/bookings/${b.bookingId}/edit`)}>Edit</button>
-              <button className="btn-link danger" onClick={() => setTarget(b)}>Delete</button>
+              {b.status !== 'CANCELLED' && (
+                <button className="btn-link danger" onClick={() => setTarget(b)}>Cancel</button>
+              )}
             </>
           )}
         />
@@ -146,9 +155,11 @@ export default function BookingList() {
       <ConfirmDialog
         open={!!target}
         busy={busy}
-        title="Delete booking?"
-        message={`Booking #${target?.bookingId} and all payments recorded against it will be removed. This cannot be undone.`}
-        onConfirm={confirmDelete}
+        title="Cancel this booking?"
+        message={`Booking #${target?.bookingId} for ${target?.customer?.fullName ?? 'this customer'} will be marked CANCELLED, and they will see that on their My Bookings page. The vehicle becomes available again. Payments already recorded are kept.`}
+        confirmLabel="Cancel booking"
+        cancelLabel="Keep booking"
+        onConfirm={confirmCancel}
         onCancel={() => setTarget(null)}
       />
     </>
