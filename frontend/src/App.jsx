@@ -10,13 +10,11 @@ import Signup from './pages/public/Signup.jsx'
 import CustomerLogin from './pages/public/CustomerLogin.jsx'
 import RentForm from './pages/public/RentForm.jsx'
 import MyBookings from './pages/public/MyBookings.jsx'
+import ProfileDialog from './pages/public/ProfileDialog.jsx'
 
 // Staff area
-
-import StaffLogin from './pages/Login.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import CustomerList from './pages/customers/CustomerList.jsx'
-import CustomerForm from './pages/customers/CustomerForm.jsx'
 import CategoryList from './pages/categories/CategoryList.jsx'
 import CategoryForm from './pages/categories/CategoryForm.jsx'
 import VehicleList from './pages/vehicles/VehicleList.jsx'
@@ -24,8 +22,7 @@ import VehicleForm from './pages/vehicles/VehicleForm.jsx'
 import DriverList from './pages/drivers/DriverList.jsx'
 import DriverForm from './pages/drivers/DriverForm.jsx'
 import BookingList from './pages/bookings/BookingList.jsx'
-import BookingForm from './pages/bookings/BookingForm.jsx'
-import BookingDetail from "./pages/bookings/BookingDetails.jsx";
+import BookingDetail from './pages/bookings/BookingDetail.jsx'
 import PaymentList from './pages/payments/PaymentList.jsx'
 import PaymentForm from './pages/payments/PaymentForm.jsx'
 
@@ -40,6 +37,9 @@ const CUSTOMER_KEY = 'rentox.customer'
  *   staff    - the single hardcoded admin account from the project scope,
  *              checked in the browser.
  *
+ * Both are entered through the same form at /login, which decides which of the
+ * two a given set of credentials belongs to and routes accordingly.
+ *
  * Neither is real security: the API itself is unauthenticated, so these only
  * decide what the UI shows. Locking the API down would mean adding Spring
  * Security, which is outside the project scope.
@@ -50,6 +50,7 @@ export default function App() {
     return raw ? JSON.parse(raw) : null
   })
   const [staff, setStaff] = useState(() => localStorage.getItem(STAFF_KEY))
+  const [profileOpen, setProfileOpen] = useState(false)
   const location = useLocation()
 
   const loginCustomer = useCallback((c) => {
@@ -74,23 +75,22 @@ export default function App() {
 
   /* ---------------- Staff area: /staff/** ---------------- */
   if (location.pathname.startsWith('/staff')) {
+    // Not signed in as admin: there is no separate staff form to fall back to,
+    // so send them to the one public sign-in page.
     if (!staff) {
       return (
         <Routes>
-          <Route path="/staff/login" element={<StaffLogin onLogin={loginStaff} />} />
-          <Route path="*" element={<Navigate to="/staff/login" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       )
     }
     return (
       <Navbar user={staff} onLogout={logoutStaff}>
         <Routes>
-          <Route path="/staff/login" element={<Navigate to="/staff" replace />} />
           <Route path="/staff" element={<Dashboard />} />
 
-          {/* No "new customer" route - customers sign up themselves. */}
+          {/* Customers sign up and maintain their own details - staff only look. */}
           <Route path="/staff/customers" element={<CustomerList />} />
-          <Route path="/staff/customers/:id/edit" element={<CustomerForm />} />
 
           <Route path="/staff/categories" element={<CategoryList />} />
           <Route path="/staff/categories/new" element={<CategoryForm />} />
@@ -104,10 +104,10 @@ export default function App() {
           <Route path="/staff/drivers/new" element={<DriverForm />} />
           <Route path="/staff/drivers/:id/edit" element={<DriverForm />} />
 
+          {/* Bookings are made by customers and only looked at here - staff
+              can move the status (including cancelling), not rewrite them. */}
           <Route path="/staff/bookings" element={<BookingList />} />
-          <Route path="/staff/bookings/new" element={<BookingForm />} />
           <Route path="/staff/bookings/:id" element={<BookingDetail />} />
-          <Route path="/staff/bookings/:id/edit" element={<BookingForm />} />
 
           <Route path="/staff/payments" element={<PaymentList />} />
           <Route path="/staff/payments/new" element={<PaymentForm />} />
@@ -121,12 +121,24 @@ export default function App() {
 
   /* ---------------- Public site ---------------- */
   return (
-    <PublicHeader customer={customer} onLogout={logoutCustomer}>
+    <PublicHeader customer={customer} onLogout={logoutCustomer}
+                  onOpenProfile={() => setProfileOpen(true)}>
       <Routes>
         {/* Anyone can browse the fleet and see prices without an account. */}
         <Route path="/" element={<Browse customer={customer} />} />
         <Route path="/signup" element={<Signup onLogin={loginCustomer} customer={customer} />} />
-        <Route path="/login" element={<CustomerLogin onLogin={loginCustomer} customer={customer} />} />
+        {/* Admins sign in here too - the form routes them to /staff. */}
+        <Route
+          path="/login"
+          element={
+            <CustomerLogin
+              onLogin={loginCustomer}
+              onStaffLogin={loginStaff}
+              customer={customer}
+              staff={staff}
+            />
+          }
+        />
 
         {/* Renting requires an account - RentForm redirects to /signup itself. */}
         <Route path="/rent/:vehicleId" element={<RentForm customer={customer} />} />
@@ -134,6 +146,16 @@ export default function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+
+      {/* Editing their own details refreshes the stored session, so the header
+          and anything reading `customer` follow along immediately. */}
+      {profileOpen && customer && (
+        <ProfileDialog
+          customer={customer}
+          onClose={() => setProfileOpen(false)}
+          onUpdated={loginCustomer}
+        />
+      )}
     </PublicHeader>
   )
 }

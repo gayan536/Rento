@@ -4,6 +4,7 @@ import {
   categoryApi, money, parseError, vehicleApi, vehicleImageUrl,
 } from '../../api.js'
 import { Alert } from '../../components/FormField.jsx'
+import heroVideo from "../../Video/hero.mp4";
 
 /** Shown when a vehicle has no uploaded photo. */
 function PhotoPlaceholder() {
@@ -60,7 +61,7 @@ function VehicleCard({ vehicle, onRent }) {
             onClick={() => onRent(vehicle)}
             title={rentable ? 'Rent this vehicle' : 'This vehicle is not available'}
           >
-            {rentable ? 'Rent this car' : 'Unavailable'}
+            {rentable ? 'Rent it!' : 'Unavailable'}
           </button>
         </div>
       </div>
@@ -70,7 +71,7 @@ function VehicleCard({ vehicle, onRent }) {
 
 /**
  * The public landing page. No account needed - anyone can browse the fleet and
- * see the daily rates. Clicking "Rent this car" is the point where an account
+ * see the daily rates. Clicking "Rent it!" is the point where an account
  * becomes necessary, and a visitor without one is sent to sign up.
  */
 export default function Browse({ customer }) {
@@ -117,21 +118,33 @@ export default function Browse({ customer }) {
 
   return (
     <>
-      <section className="hero">
-        <div className="hero-inner">
+      <div className="hero-inner">
+        <div className="hero-banner">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="hero-video"
+        >
+          <source src={heroVideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+
+        <div className="hero-content">
           <h1>Rent a vehicle across Sri Lanka</h1>
-          <p>
-            Browse the fleet and see our daily rates — no account needed.
-            Create one when you are ready to book.
-          </p>
+          <p>Browse the fleet and see our daily rates.</p>
+
           {!customer && (
             <div className="hero-actions">
-              <Link to="/signup" className="btn btn-primary">Create an account</Link>
-              <Link to="/login" className="btn btn-secondary">Sign in</Link>
+              <Link to="/signup" className="btn btn-primary">
+                Create an account
+              </Link>
             </div>
           )}
         </div>
-      </section>
+      </div>
+</div>
 
       <div className="site-content">
         <Alert kind="error" onClose={() => setError('')}>{error}</Alert>
