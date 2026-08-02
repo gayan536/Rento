@@ -18,6 +18,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Module 6 - Payment Management.
+ *
+ * GET    /api/payments                                list all
+ * GET    /api/payments/{id}                           one payment
+ * GET    /api/payments/booking/{bookingId}            payments for one booking
+ * GET    /api/payments/booking/{bookingId}/balance    total, paid and balance due
+ * POST   /api/payments                                record a payment
+ * PUT    /api/payments/{id}                           correct a payment
+ * DELETE /api/payments/{id}                           remove a wrong entry
+ */
 @RestController
 @RequestMapping("/api/payments")
 public class PaymentController {
