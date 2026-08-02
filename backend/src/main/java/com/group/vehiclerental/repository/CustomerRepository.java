@@ -12,6 +12,7 @@ import java.util.Optional;
  * Spring generates the implementation at startup - we only declare extra
  * finders, and Spring writes the query from the method name.
  */
+
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
