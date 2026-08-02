@@ -98,6 +98,7 @@ public class CustomerService {
      * and they land here. Once stored they are reused for later bookings, and
      * the customer is only asked again if they change.
      */
+    
     public Customer applyRentalDetails(Customer customer, String nic, String licenceNo) {
         boolean changed = false;
 

@@ -27,6 +27,7 @@ import java.util.List;
 // Class level, so it also applies when a lazy Customer proxy is serialised on
 // its own. Hibernate's proxy carries these two internal fields, which
 // Jackson cannot serialise.
+
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Customer {
 
