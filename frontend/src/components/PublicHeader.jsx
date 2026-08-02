@@ -1,4 +1,5 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { customerImageUrl } from '../api.js'
 
 /**
  * Header for the public site. Deliberately different from the staff sidebar:
@@ -7,8 +8,9 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
  * The whole public site is browsable without an account - only the sign-in
  * state of the right-hand side changes.
  */
-export default function PublicHeader({ customer, onLogout, children }) {
+export default function PublicHeader({ customer, onLogout, onOpenProfile, children }) {
   const navigate = useNavigate()
+  const photo = customerImageUrl(customer)
 
   const logout = () => {
     onLogout()
@@ -28,23 +30,30 @@ export default function PublicHeader({ customer, onLogout, children }) {
           </Link>
 
           <nav className="site-nav">
-            <NavLink to="/" end className={({ isActive }) => 'site-link' + (isActive ? ' active' : '')}>
-              Browse Vehicles
-            </NavLink>
+            {/* Signed-out visitors land on the fleet already, so the link is
+                only useful once a customer has other pages to come back from. */}
             {customer && (
-              <NavLink to="/my-bookings" className={({ isActive }) => 'site-link' + (isActive ? ' active' : '')}>
-                My Bookings
-              </NavLink>
+              <>
+                <NavLink to="/" end className={({ isActive }) => 'site-link' + (isActive ? ' active' : '')}>
+                  Browse Vehicles
+                </NavLink>
+                <NavLink to="/my-bookings" className={({ isActive }) => 'site-link' + (isActive ? ' active' : '')}>
+                  My Bookings
+                </NavLink>
+              </>
             )}
           </nav>
 
           <div className="site-actions">
             {customer ? (
               <>
-                <span className="site-user">
-                  <span className="avatar">{(customer.fullName || 'C').slice(0, 1).toUpperCase()}</span>
+                <button type="button" className="site-user" onClick={onOpenProfile}
+                        title="Your account details">
+                  {photo
+                    ? <img className="avatar" src={photo} alt="" />
+                    : <span className="avatar">{(customer.fullName || 'C').slice(0, 1).toUpperCase()}</span>}
                   <span className="site-user-name">{customer.fullName}</span>
-                </span>
+                </button>
                 <button className="btn btn-secondary btn-sm" onClick={logout}>Sign out</button>
               </>
             ) : (
@@ -58,11 +67,6 @@ export default function PublicHeader({ customer, onLogout, children }) {
       </header>
 
       <main className="site-main">{children}</main>
-
-      <footer className="site-footer">
-        <span>RentoX — Vehicle Rental Management System</span>
-        <a href="/staff">Staff login</a>
-      </footer>
     </div>
   )
 }
