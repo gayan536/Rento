@@ -1,5 +1,7 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { customerImageUrl } from '../api.js'
+import logo from "../images/logo.jpg";
+
 
 /**
  * Header for the public site. Deliberately different from the staff sidebar:
@@ -22,12 +24,17 @@ export default function PublicHeader({ customer, onLogout, onOpenProfile, childr
       <header className="site-header">
         <div className="site-header-inner">
           <Link to="/" className="site-brand">
-            <span className="brand-mark">R</span>
-            <span>
-              <span className="brand-name">RentoX</span>
-              <span className="brand-sub">Vehicle Rental</span>
-            </span>
-          </Link>
+        <img
+          src={logo}
+          alt="Rento Logo"
+          className="brand-logo"
+        />
+
+        <span>
+          <span className="brand-name">Rento</span>
+          {/* <span className="brand-sub">Vehicle Rental</span> */}
+        </span>
+      </Link>
 
           <nav className="site-nav">
             {/* Signed-out visitors land on the fleet already, so the link is

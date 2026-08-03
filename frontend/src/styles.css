@@ -478,12 +478,32 @@ table.data th.num { text-align: right; }
 .site-header {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 30;
+  position: sticky;
+  top: 0;
+  z-index: 30;
 }
+
 .site-header-inner {
-  max-width: 1180px; margin: 0 auto; padding: 12px 22px;
-  display: flex; align-items: center; gap: 22px;
+  width: 100%;
+  padding: 12px 32px;      /* Adjust to 16px or 24px if you want */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+
+.site-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.brand-logo {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
 .site-brand { display: flex; align-items: center; gap: 10px; color: inherit; }
 .site-brand:hover { text-decoration: none; }
 .site-brand .brand-name, .site-brand .brand-sub { display: block; }
@@ -554,10 +574,72 @@ img.avatar { object-fit: cover; }
   background: rgba(0, 0, 0, 0.45);
 }
 
-.hero-content {
-  position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column;
-  justify-content: center; align-items: flex-start;  padding: 60px;  color: white;
+.hero {
+  position: relative;
+  overflow: hidden;
 }
+
+/* Dark gradient overlay for better text visibility */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.75) 0%,
+    rgba(0, 0, 0, 0.45) 35%,
+    rgba(0, 0, 0, 0.15) 65%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  z-index: 1;
+}
+
+.hero-content {
+  position: absolute;
+  left:60px;
+  bottom: 30px;      /* Move lower */
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: #fff;
+  max-width: 700px;   /* Wide enough so the heading stays on one line */
+}
+
+.hero-content h1 {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;   /* Prevent line break */
+}
+
+.hero-content p {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-content .btn {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 14px 30px;
+  border-radius: 10px;
+}
+
+/*.hero-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px;
+  color: white;
+}
+
+.hero-content h1 { font-size: 32px; }
+.hero-content p { font-size: 20px; }
+.hero-content .btn { font-size: 15px; padding: 10px 18px; }*/
 
 /* ---------- Browse toolbar + vehicle grid ---------- */
 .browse-toolbar {
