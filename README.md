@@ -14,7 +14,7 @@ No Docker, no external APIs, no payment gateways.
 | --- | ------------ | ---------- | --------------------------- |
 | 1   |              |            | Customer Management         |
 | 2   |              |            | Vehicle Category Management |
-| 3   |              |            | Vehicle Management          |
+| 3   | V.G.Kavinu Riveen    s17266          |            | Vehicle Management          |
 | 4   |              |            | Driver Management           |
 | 5   |              |            | Booking Management          |
 | 6   | A.A.T.K.P. Amarasinghe| s17212 | Payment Management     |
