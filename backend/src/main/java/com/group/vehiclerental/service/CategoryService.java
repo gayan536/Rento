@@ -24,7 +24,6 @@ public class CategoryService {
                            VehicleRepository vehicleRepository) {
         this.categoryRepository = categoryRepository;
         this.vehicleRepository = vehicleRepository;
-        
     }
 
     @Transactional(readOnly = true)
@@ -93,4 +92,3 @@ public class CategoryService {
         return categoryRepository.count();
     }
 }
-

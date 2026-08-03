@@ -1,5 +1,4 @@
-﻿
-package com.group.vehiclerental.service;
+﻿package com.group.vehiclerental.service;
 
 import com.group.vehiclerental.exception.BusinessRuleException;
 import com.group.vehiclerental.exception.ResourceNotFoundException;
@@ -109,4 +108,4 @@ public class DriverService {
     public long count() {
         return driverRepository.count();
     }
-}// placeholder
+}

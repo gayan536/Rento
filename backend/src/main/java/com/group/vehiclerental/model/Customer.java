@@ -27,7 +27,6 @@ import java.util.List;
 // Class level, so it also applies when a lazy Customer proxy is serialised on
 // its own. Hibernate's proxy carries these two internal fields, which
 // Jackson cannot serialise.
-
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Customer {
 
@@ -82,6 +81,14 @@ public class Customer {
 
     @Column(name = "registered_date", nullable = false)
     private LocalDate registeredDate;
+
+    /**
+     * File name of the customer's photo in backend/uploads/, or NULL. Same
+     * arrangement as Vehicle: the row keeps the name, never the bytes.
+     */
+    @Size(max = 255)
+    @Column(name = "image_path", length = 255)
+    private String imagePath;
 
     /**
      * Inverse side. mappedBy = "customer" refers to the Booking.customer field,
@@ -190,6 +197,14 @@ public class Customer {
 
     public void setRegisteredDate(LocalDate registeredDate) {
         this.registeredDate = registeredDate;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public List<Booking> getBookings() {
