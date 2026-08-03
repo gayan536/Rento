@@ -1,4 +1,4 @@
-﻿package com.group.vehiclerental.repository;
+package com.group.vehiclerental.repository;
 
 import com.group.vehiclerental.model.Booking;
 import org.springframework.data.jpa.repository.EntityGraph;

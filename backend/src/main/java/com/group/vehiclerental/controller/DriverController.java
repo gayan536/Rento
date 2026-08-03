@@ -1,4 +1,4 @@
-﻿package com.group.vehiclerental.controller;
+package com.group.vehiclerental.controller;
 
 import com.group.vehiclerental.model.Driver;
 import com.group.vehiclerental.service.DriverService;

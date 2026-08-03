@@ -1,40 +1,56 @@
-﻿package com.group.vehiclerental.repository;
+package com.group.vehiclerental.repository;
 
-import com.group.vehiclerental.model.Payment;
+import com.group.vehiclerental.model.Vehicle;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PaymentRepository extends JpaRepository<Payment, Integer> {
-
-    @Override
-    @EntityGraph(attributePaths = "booking")
-    List<Payment> findAll();
-
-    @Override
-    @EntityGraph(attributePaths = "booking")
-    Optional<Payment> findById(Integer id);
-
-    /** Proposal: "view payments for one booking". */
-    @EntityGraph(attributePaths = "booking")
-    List<Payment> findByBooking_BookingId(Integer bookingId);
-
-    @EntityGraph(attributePaths = "booking")
-    List<Payment> findByPaymentMethod(String paymentMethod);
+public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
     /**
-     * Total already paid against one booking, used to work out the balance due.
-     * COALESCE turns the SUM of zero rows (which is NULL) into 0.
+     * @EntityGraph tells Hibernate to fetch the category in the SAME query
+     * (a LEFT JOIN FETCH) even though the field is marked LAZY.
+     *
+     * Two reasons this matters:
+     *  1. It avoids the N+1 problem - one query for 50 vehicles, not 51.
+     *  2. spring.jpa.open-in-view=false closes the persistence context when
+     *     the service method returns, so a still-lazy category would blow up
+     *     with LazyInitializationException while Jackson builds the JSON.
      */
-    @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.booking.bookingId = :bookingId")
-    BigDecimal sumAmountByBookingId(@Param("bookingId") Integer bookingId);
+    @Override
+    @EntityGraph(attributePaths = "category")
+    List<Vehicle> findAll();
 
-    boolean existsByBooking_BookingId(Integer bookingId);
+    @Override
+    @EntityGraph(attributePaths = "category")
+    Optional<Vehicle> findById(Integer id);
+
+    /** Proposal: "filter by category or availability status". */
+    @EntityGraph(attributePaths = "category")
+    List<Vehicle> findByCategory_CategoryId(Integer categoryId);
+
+    @EntityGraph(attributePaths = "category")
+    List<Vehicle> findByStatus(String status);
+
+    @EntityGraph(attributePaths = "category")
+    List<Vehicle> findByCategory_CategoryIdAndStatus(Integer categoryId, String status);
+
+    @EntityGraph(attributePaths = "category")
+    List<Vehicle> findByRegistrationNumberContainingIgnoreCaseOrBrandContainingIgnoreCaseOrModelContainingIgnoreCase(
+            String registrationNumber, String brand, String model);
+
+    boolean existsByRegistrationNumber(String registrationNumber);
+
+    boolean existsByRegistrationNumberAndVehicleIdNot(String registrationNumber, Integer vehicleId);
+
+    /** Used by CategoryService to block deleting a category still in use. */
+    boolean existsByCategory_CategoryId(Integer categoryId);
+
+    long countByCategory_CategoryId(Integer categoryId);
+
+    long countByStatus(String status);
 }

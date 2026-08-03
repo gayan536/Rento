@@ -1,4 +1,4 @@
-﻿package com.group.vehiclerental.controller;
+package com.group.vehiclerental.controller;
 
 import com.group.vehiclerental.dto.BookingRequest;
 import com.group.vehiclerental.model.Booking;

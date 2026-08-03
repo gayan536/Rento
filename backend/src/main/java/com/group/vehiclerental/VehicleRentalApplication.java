@@ -1,4 +1,4 @@
-﻿package com.group.vehiclerental;
+package com.group.vehiclerental;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

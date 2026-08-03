@@ -1,4 +1,4 @@
-﻿package com.group.vehiclerental.model;
+package com.group.vehiclerental.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
