@@ -2,31 +2,34 @@ package com.group.vehiclerental.dto;
 
 import java.math.BigDecimal;
 
+/**
+ * Proposal, Payment module: "show balance due".
+ * Returned by GET /api/payments/booking/{bookingId}/balance
+ */
 public class BookingBalanceResponse {
 
-    private Long bookingId;
+    private Integer bookingId;
     private BigDecimal totalAmount;
-    private BigDecimal paidAmount;
-    private BigDecimal balanceAmount;
+    private BigDecimal totalPaid;
+    private BigDecimal balanceDue;
+    private boolean fullySettled;
 
-    // Default Constructor
     public BookingBalanceResponse() {
     }
 
-    // All-args Constructor
-    public BookingBalanceResponse(Long bookingId, BigDecimal totalAmount, BigDecimal paidAmount, BigDecimal balanceAmount) {
+    public BookingBalanceResponse(Integer bookingId, BigDecimal totalAmount, BigDecimal totalPaid) {
         this.bookingId = bookingId;
         this.totalAmount = totalAmount;
-        this.paidAmount = paidAmount;
-        this.balanceAmount = balanceAmount;
+        this.totalPaid = totalPaid;
+        this.balanceDue = totalAmount.subtract(totalPaid);
+        this.fullySettled = this.balanceDue.compareTo(BigDecimal.ZERO) <= 0;
     }
 
-    // Getters and Setters
-    public Long getBookingId() {
+    public Integer getBookingId() {
         return bookingId;
     }
 
-    public void setBookingId(Long bookingId) {
+    public void setBookingId(Integer bookingId) {
         this.bookingId = bookingId;
     }
 
@@ -38,19 +41,27 @@ public class BookingBalanceResponse {
         this.totalAmount = totalAmount;
     }
 
-    public BigDecimal getPaidAmount() {
-        return paidAmount;
+    public BigDecimal getTotalPaid() {
+        return totalPaid;
     }
 
-    public void setPaidAmount(BigDecimal paidAmount) {
-        this.paidAmount = paidAmount;
+    public void setTotalPaid(BigDecimal totalPaid) {
+        this.totalPaid = totalPaid;
     }
 
-    public BigDecimal getBalanceAmount() {
-        return balanceAmount;
+    public BigDecimal getBalanceDue() {
+        return balanceDue;
     }
 
-    public void setBalanceAmount(BigDecimal balanceAmount) {
-        this.balanceAmount = balanceAmount;
+    public void setBalanceDue(BigDecimal balanceDue) {
+        this.balanceDue = balanceDue;
+    }
+
+    public boolean isFullySettled() {
+        return fullySettled;
+    }
+
+    public void setFullySettled(boolean fullySettled) {
+        this.fullySettled = fullySettled;
     }
 }

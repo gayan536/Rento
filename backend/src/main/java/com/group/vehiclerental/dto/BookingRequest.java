@@ -1,61 +1,73 @@
 package com.group.vehiclerental.dto;
 
-import jakarta.validation.constraints.FutureOrPresent;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
+/**
+ * What the React booking form sends.
+ *
+ * Note what is NOT here: totalDays, totalAmount. The proposal says the total is
+ * "calculated automatically", so the server works both out from the dates and
+ * the rates. Accepting them from the browser would let anyone post their own
+ * price.
+ */
 public class BookingRequest {
 
-    @NotNull(message = "Customer ID is required")
-    private Long customerId;
+    @NotNull(message = "Customer is required")
+    private Integer customerId;
 
-    @NotNull(message = "Vehicle ID is required")
-    private Long vehicleId;
+    @NotNull(message = "Vehicle is required")
+    private Integer vehicleId;
 
-    private Long driverId; // Optional depending on whether a driver is requested
+    /** Optional - null means a self-drive rental. */
+    private Integer driverId;
 
     @NotNull(message = "Start date is required")
-    @FutureOrPresent(message = "Start date must be today or in the future")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
     @NotNull(message = "End date is required")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    // Constructors
+    /** PENDING, ACTIVE, COMPLETED, CANCELLED - defaults to PENDING. */
+    private String status;
+
+    /**
+     * Collected by the public rent form. Sign-up does not ask for licence
+     * details, so the first time a customer books we capture them here and
+     * save them onto their customer record.
+     */
+    private String nic;
+
+    private String drivingLicenceNo;
+
     public BookingRequest() {
     }
 
-    public BookingRequest(Long customerId, Long vehicleId, Long driverId, LocalDate startDate, LocalDate endDate) {
-        this.customerId = customerId;
-        this.vehicleId = vehicleId;
-        this.driverId = driverId;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
-
-    // Getters and Setters
-    public Long getCustomerId() {
+    public Integer getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(Long customerId) {
+    public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
 
-    public Long getVehicleId() {
+    public Integer getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(Integer vehicleId) {
         this.vehicleId = vehicleId;
     }
 
-    public Long getDriverId() {
+    public Integer getDriverId() {
         return driverId;
     }
 
-    public void setDriverId(Long driverId) {
+    public void setDriverId(Integer driverId) {
         this.driverId = driverId;
     }
 
@@ -73,5 +85,29 @@ public class BookingRequest {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getNic() {
+        return nic;
+    }
+
+    public void setNic(String nic) {
+        this.nic = nic;
+    }
+
+    public String getDrivingLicenceNo() {
+        return drivingLicenceNo;
+    }
+
+    public void setDrivingLicenceNo(String drivingLicenceNo) {
+        this.drivingLicenceNo = drivingLicenceNo;
     }
 }

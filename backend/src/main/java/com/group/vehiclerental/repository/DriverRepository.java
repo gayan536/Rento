@@ -25,4 +25,4 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     boolean existsByLicenceNoAndDriverIdNot(String licenceNo, Integer driverId);
 
     long countByAvailable(boolean available);
-}// placeholder
+}
