@@ -17,15 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Module 2 - Vehicle Category Management.
- *
- * GET    /api/categories         list all, or ?search=car
- * GET    /api/categories/{id}    one category
- * POST   /api/categories         create
- * PUT    /api/categories/{id}    update
- * DELETE /api/categories/{id}    delete (409 if vehicles still use it)
- */
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
