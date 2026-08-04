@@ -13,15 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * One place that turns exceptions into tidy JSON error responses.
- *
- * @RestControllerAdvice means these methods apply to every controller in the
- * application, so no controller needs its own try/catch. The React frontend
- * always receives the same error shape:
- *
- *   { "timestamp": ..., "status": 404, "error": "Not Found", "message": "..." }
- */
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -34,25 +26,21 @@ public class GlobalExceptionHandler {
         return map;
     }
 
-    /** A record id that does not exist -> 404 */
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(body(HttpStatus.NOT_FOUND, ex.getMessage()));
     }
 
-    /** A broken business rule (overlapping booking, category in use) -> 409 */
+   
     @ExceptionHandler(BusinessRuleException.class)
     public ResponseEntity<Map<String, Object>> handleBusinessRule(BusinessRuleException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(body(HttpStatus.CONFLICT, ex.getMessage()));
     }
 
-    /**
-     * Bean Validation failures on an @Valid request body -> 400, with a
-     * field-by-field map so the React form can show the message next to the
-     * offending input.
-     */
+  
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
         Map<String, String> fieldErrors = new HashMap<>();
@@ -64,11 +52,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
-    /**
-     * A database constraint we did not catch first - a duplicate UNIQUE value
-     * or a foreign key that still has children. Returned as 409 rather than a
-     * 500 so the frontend can show something meaningful.
-     */
+   
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDataIntegrity(DataIntegrityViolationException ex) {
         String message = "Operation violates a database constraint "
