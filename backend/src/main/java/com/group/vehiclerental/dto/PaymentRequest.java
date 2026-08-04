@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-/** What the React payment form sends. */
+
 public class PaymentRequest {
 
     @NotNull(message = "Booking is required")
@@ -18,15 +18,15 @@ public class PaymentRequest {
     @Positive(message = "Amount must be greater than zero")
     private BigDecimal amount;
 
-    /** CASH, CARD, BANK_TRANSFER */
+
     @NotBlank(message = "Payment method is required")
     private String paymentMethod;
 
-    /** ADVANCE, FULL, BALANCE */
+
     @NotBlank(message = "Payment type is required")
     private String paymentType;
 
-    /** Optional - the server uses today's date when this is left out. */
+    
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate paymentDate;
 
