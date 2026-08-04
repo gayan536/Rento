@@ -18,17 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Module 4 - Driver Management.
- *
- * GET    /api/drivers                      list, or ?available=true
- * GET    /api/drivers/search?q=sunil       search by name or NIC
- * GET    /api/drivers/{id}                 one driver
- * POST   /api/drivers                      create
- * PUT    /api/drivers/{id}                 update
- * PATCH  /api/drivers/{id}/availability    toggle availability
- * DELETE /api/drivers/{id}                 delete
- */
+
 @RestController
 @RequestMapping("/api/drivers")
 public class DriverController {
