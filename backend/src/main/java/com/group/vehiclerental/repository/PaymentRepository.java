@@ -22,17 +22,14 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     @EntityGraph(attributePaths = "booking")
     Optional<Payment> findById(Integer id);
 
-    /** Proposal: "view payments for one booking". */
+   
     @EntityGraph(attributePaths = "booking")
     List<Payment> findByBooking_BookingId(Integer bookingId);
 
     @EntityGraph(attributePaths = "booking")
     List<Payment> findByPaymentMethod(String paymentMethod);
 
-    /**
-     * Total already paid against one booking, used to work out the balance due.
-     * COALESCE turns the SUM of zero rows (which is NULL) into 0.
-     */
+   
     @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.booking.bookingId = :bookingId")
     BigDecimal sumAmountByBookingId(@Param("bookingId") Integer bookingId);
 
