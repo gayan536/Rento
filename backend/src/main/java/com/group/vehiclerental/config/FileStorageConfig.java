@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 @Configuration
 public class FileStorageConfig implements WebMvcConfigurer {
 
-    /** Resolved once so the controller and this mapping agree on the location. */
+   
     public static final Path UPLOAD_DIR = Paths.get("uploads").toAbsolutePath().normalize();
 
     @Override
