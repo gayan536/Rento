@@ -12,15 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Public authentication for customers.
- *
- * POST /api/auth/signup   create an account
- * POST /api/auth/login    sign in
- *
- * Both return the Customer. The password field is annotated WRITE_ONLY on the
- * entity, so the hash is never included in the response.
- */
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
