@@ -21,18 +21,14 @@ import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A vehicle in the rental fleet.
- */
+
 @Entity
 @Table(name = "vehicle")
-// Class level, so it also applies when a lazy Vehicle proxy is serialised on
-// its own. Hibernate's proxy carries these two internal fields, which
-// Jackson cannot serialise.
+
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Vehicle {
 
-    /** Allowed status values: AVAILABLE, RENTED, MAINTENANCE */
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "vehicle_id")
@@ -53,40 +49,23 @@ public class Vehicle {
     @Column(name = "model", nullable = false, length = 50)
     private String model;
 
-    /**
-     * The column name is written with backticks because YEAR is also a MySQL
-     * data type name. The backticks tell Hibernate to quote the identifier so
-     * it matches the `year` column created in schema.sql.
-     */
+   
     @Min(value = 1950, message = "Year must be 1950 or later")
     @Max(value = 2100, message = "Year must be 2100 or earlier")
     @Column(name = "`year`")
     private Integer year;
 
-    /** Allowed values: PETROL, DIESEL, HYBRID, ELECTRIC */
+   
     @Size(max = 20)
     @Column(name = "fuel_type", length = 20)
     private String fuelType;
 
-    /** Allowed values: MANUAL, AUTOMATIC */
+    
     @Size(max = 20)
     @Column(name = "transmission", length = 20)
     private String transmission;
 
-    /**
-     * Owning side of the Vehicle-Category relationship: this class holds the
-     * category_id foreign key column, so this is where @JoinColumn goes.
-     *
-     * FetchType.LAZY means loading a Vehicle does NOT immediately run a second
-     * SELECT for its Category. The category is fetched only if something calls
-     * getCategory(). The default for @ManyToOne is EAGER, which would fire an
-     * extra query for every vehicle row - listing 50 vehicles becomes 51
-     * queries (the "N+1 select" problem). LAZY keeps the list page to one query.
-     *
-     * @JsonIgnoreProperties hides the two internal fields Hibernate adds to a
-     * lazy proxy object. Without it, Jackson tries to serialise
-     * "hibernateLazyInitializer" and fails with a serialisation error.
-     */
+  
     @NotNull(message = "Category is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false,
@@ -94,22 +73,18 @@ public class Vehicle {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "vehicles"})
     private Category category;
 
-    /** Allowed values: AVAILABLE, RENTED, MAINTENANCE */
+   
     @NotBlank(message = "Status is required")
     @Size(max = 20)
     @Column(name = "status", nullable = false, length = 20)
     private String status = "AVAILABLE";
 
-    /**
-     * File name of the uploaded photo, e.g. "vehicle-1-a3f9.jpg". The browser
-     * loads it from http://localhost:8080/uploads/<name>. Null means the UI
-     * shows a placeholder instead.
-     */
+   
     @Size(max = 255)
     @Column(name = "image_path", length = 255)
     private String imagePath;
 
-    /** Inverse side - Booking.vehicle owns the vehicle_id foreign key. */
+  
     @OneToMany(mappedBy = "vehicle")
     @JsonIgnore
     private List<Booking> bookings = new ArrayList<>();
@@ -217,10 +192,7 @@ public class Vehicle {
         this.bookings = bookings;
     }
 
-    /**
-     * Prints categoryId rather than the Category object. Reading only the id of
-     * a lazy proxy does not hit the database, and it avoids recursion.
-     */
+   
     @Override
     public String toString() {
         return "Vehicle{" +
