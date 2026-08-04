@@ -25,21 +25,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A rental booking - the central entity of the system.
- *
- * total_days   = end_date - start_date
- * total_amount = (total_days * category.dailyRate)
- *              + (total_days * driver.dailyCharge, only if a driver is chosen)
- *
- * That calculation lives in BookingService, not here: entities describe the
- * data, services hold the business rules.
- */
+
 @Entity
 @Table(name = "booking")
-// Class level, so it also applies when a lazy Booking proxy is serialised on
-// its own. Hibernate's proxy carries these two internal fields, which
-// Jackson cannot serialise.
+
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Booking {
 
@@ -48,15 +37,7 @@ public class Booking {
     @Column(name = "booking_id")
     private Integer bookingId;
 
-    /**
-     * LAZY so that listing bookings does not automatically pull every customer
-     * row as well. Jackson still serialises the customer when the object is
-     * actually loaded; "customer_id" alone is not enough for the booking list
-     * page, so the service loads what it needs.
-     *
-     * @JsonIgnoreProperties strips the Hibernate proxy internals, and also
-     * "bookings" so we never walk back Booking -> Customer -> bookings.
-     */
+   
     @NotNull(message = "Customer is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false,
@@ -71,11 +52,7 @@ public class Booking {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "bookings"})
     private Vehicle vehicle;
 
-    /**
-     * Nullable: a self-drive rental has no driver. This is the only optional
-     * relationship in the system, which is why nullable = true here and why
-     * the SQL foreign key uses ON DELETE SET NULL.
-     */
+   
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id", nullable = true,
                 foreignKey = @ForeignKey(name = "fk_booking_driver"))
@@ -100,25 +77,13 @@ public class Booking {
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
 
-    /** Allowed values: PENDING, ACTIVE, COMPLETED, CANCELLED */
+   
     @NotBlank(message = "Status is required")
     @Size(max = 20)
     @Column(name = "status", nullable = false, length = 20)
     private String status = "PENDING";
 
-    /**
-     * Inverse side. mappedBy = "booking" points at Payment.booking, which owns
-     * the booking_id column.
-     *
-     * cascade = ALL with orphanRemoval mirrors the SQL ON DELETE CASCADE:
-     * deleting a booking deletes its payments.
-     *
-     * @JsonIgnore because this collection is LAZY and spring.jpa.open-in-view
-     * is false: by the time Jackson builds the JSON the database session has
-     * closed, so serialising it would throw LazyInitializationException.
-     * The booking detail screen loads them from GET /api/payments/booking/{id}
-     * instead, which is the cleaner REST shape anyway.
-     */
+   
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Payment> payments = new ArrayList<>();
@@ -218,7 +183,7 @@ public class Booking {
         this.payments = payments;
     }
 
-    /** Ids only - printing the related objects would trigger lazy loading. */
+   
     @Override
     public String toString() {
         return "Booking{" +
