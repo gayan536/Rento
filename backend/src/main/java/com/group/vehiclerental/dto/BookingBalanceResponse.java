@@ -2,10 +2,7 @@ package com.group.vehiclerental.dto;
 
 import java.math.BigDecimal;
 
-/**
- * Proposal, Payment module: "show balance due".
- * Returned by GET /api/payments/booking/{bookingId}/balance
- */
+
 public class BookingBalanceResponse {
 
     private Integer bookingId;
