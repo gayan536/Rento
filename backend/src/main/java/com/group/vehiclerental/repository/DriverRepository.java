@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface DriverRepository extends JpaRepository<Driver, Integer> {
 
-    /** Proposal: "filter by availability". */
+    
     List<Driver> findByAvailable(boolean available);
 
     List<Driver> findByFullNameContainingIgnoreCaseOrNicContainingIgnoreCase(String name, String nic);
