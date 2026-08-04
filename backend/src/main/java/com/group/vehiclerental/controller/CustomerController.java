@@ -18,18 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-/**
- * Module 1 - Customer Management.
- *
- * GET    /api/customers          list all, or ?search=nimal
- * GET    /api/customers/{id}     one customer
- * PUT    /api/customers/{id}     update (the customer editing their own details)
- * POST   /api/customers/{id}/photo   upload a photo (multipart)
- * DELETE /api/customers/{id}/photo   remove the photo
- * DELETE /api/customers/{id}     delete
- *
- * Creating a customer is NOT here - see POST /api/auth/signup.
- */
+
 @RestController
 @RequestMapping("/api/customers")
 public class CustomerController {
@@ -50,19 +39,13 @@ public class CustomerController {
         return customerService.findById(id);
     }
 
-    // There is deliberately no POST here. Customers create their own account
-    // through POST /api/auth/signup - staff cannot add them. Staff can still
-    // view, correct and remove customer records below.
-
+  
     @PutMapping("/{id}")
     public Customer update(@PathVariable Integer id, @Valid @RequestBody Customer customer) {
         return customerService.update(id, customer);
     }
 
-    /**
-     * Photo upload. Sent as multipart/form-data with a part named "file",
-     * not JSON - a JPEG cannot travel inside a JSON body.
-     */
+    
     @PostMapping("/{id}/photo")
     public Customer uploadPhoto(@PathVariable Integer id,
                                 @RequestPart("file") MultipartFile file) {
