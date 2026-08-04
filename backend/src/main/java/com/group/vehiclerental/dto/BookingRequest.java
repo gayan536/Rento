@@ -5,14 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-/**
- * What the React booking form sends.
- *
- * Note what is NOT here: totalDays, totalAmount. The proposal says the total is
- * "calculated automatically", so the server works both out from the dates and
- * the rates. Accepting them from the browser would let anyone post their own
- * price.
- */
+
 public class BookingRequest {
 
     @NotNull(message = "Customer is required")
@@ -21,7 +14,7 @@ public class BookingRequest {
     @NotNull(message = "Vehicle is required")
     private Integer vehicleId;
 
-    /** Optional - null means a self-drive rental. */
+    
     private Integer driverId;
 
     @NotNull(message = "Start date is required")
@@ -32,14 +25,10 @@ public class BookingRequest {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    /** PENDING, ACTIVE, COMPLETED, CANCELLED - defaults to PENDING. */
+   
     private String status;
 
-    /**
-     * Collected by the public rent form. Sign-up does not ask for licence
-     * details, so the first time a customer books we capture them here and
-     * save them onto their customer record.
-     */
+  
     private String nic;
 
     private String drivingLicenceNo;
