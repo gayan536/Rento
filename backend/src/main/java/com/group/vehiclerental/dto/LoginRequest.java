@@ -2,7 +2,7 @@ package com.group.vehiclerental.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-/** Email + password from the customer sign-in form. */
+
 public class LoginRequest {
 
     @NotBlank(message = "Email is required")
