@@ -14,11 +14,7 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
-    /**
-     * Every finder below uses @EntityGraph to pull the customer, the vehicle
-     * (with its category) and the driver in a single query, instead of one
-     * extra query per booking row.
-     */
+    
     @Override
     @EntityGraph(attributePaths = {"customer", "vehicle", "vehicle.category", "driver"})
     List<Booking> findAll();
@@ -36,20 +32,11 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @EntityGraph(attributePaths = {"customer", "vehicle", "vehicle.category", "driver"})
     List<Booking> findByVehicle_VehicleId(Integer vehicleId);
 
-    /** Proposal: "filter by status or date range". Bookings that touch the range. */
+
     @EntityGraph(attributePaths = {"customer", "vehicle", "vehicle.category", "driver"})
     List<Booking> findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate to, LocalDate from);
 
-    /**
-     * The double-booking check. Two date ranges overlap when
-     *   existing.start <= new.end  AND  existing.end >= new.start
-     *
-     * CANCELLED and COMPLETED bookings are ignored - only PENDING and ACTIVE
-     * ones actually hold the vehicle.
-     *
-     * excludeBookingId lets an update ignore the booking being edited. Pass 0
-     * when creating, because no real booking can have id 0.
-     */
+   
     @Query("""
             SELECT COUNT(b) > 0 FROM Booking b
             WHERE b.vehicle.vehicleId = :vehicleId
@@ -63,7 +50,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                                      @Param("endDate") LocalDate endDate,
                                      @Param("excludeBookingId") Integer excludeBookingId);
 
-    /** Same idea for a driver - one driver cannot be on two rentals at once. */
+   
     @Query("""
             SELECT COUNT(b) > 0 FROM Booking b
             WHERE b.driver.driverId = :driverId
