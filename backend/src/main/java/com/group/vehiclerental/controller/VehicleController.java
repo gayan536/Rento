@@ -21,19 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-/**
- * Module 3 - Vehicle Management.
- *
- * GET    /api/vehicles                      list, or ?categoryId=1&status=AVAILABLE
- * GET    /api/vehicles/search?q=toyota      search by reg no, brand or model
- * GET    /api/vehicles/{id}                 one vehicle
- * POST   /api/vehicles                      create
- * PUT    /api/vehicles/{id}                 update
- * PATCH  /api/vehicles/{id}/status          change status only
- * POST   /api/vehicles/{id}/photo           upload a photo (multipart)
- * DELETE /api/vehicles/{id}/photo           remove the photo
- * DELETE /api/vehicles/{id}                 delete
- */
+
 @RestController
 @RequestMapping("/api/vehicles")
 public class VehicleController {
@@ -71,16 +59,13 @@ public class VehicleController {
         return vehicleService.update(id, request);
     }
 
-    /** PATCH because it changes one field, not the whole record. */
+    
     @PatchMapping("/{id}/status")
     public Vehicle updateStatus(@PathVariable Integer id, @RequestParam String status) {
         return vehicleService.updateStatus(id, status);
     }
 
-    /**
-     * Photo upload. Sent as multipart/form-data with a part named "file",
-     * not JSON - a JPEG cannot travel inside a JSON body.
-     */
+   
     @PostMapping("/{id}/photo")
     public Vehicle uploadPhoto(@PathVariable Integer id,
                                @RequestPart("file") MultipartFile file) {
