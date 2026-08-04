@@ -4,13 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/**
- * What the public sign-up form sends.
- *
- * Note what is NOT here: nic and drivingLicenceNo. A visitor signing up is not
- * asked for licence details - those are collected later, on the rent form,
- * the first time they actually book a vehicle.
- */
+
 public class SignupRequest {
 
     @NotBlank(message = "Full name is required")
