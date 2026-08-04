@@ -11,16 +11,7 @@ import java.util.Optional;
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
-    /**
-     * @EntityGraph tells Hibernate to fetch the category in the SAME query
-     * (a LEFT JOIN FETCH) even though the field is marked LAZY.
-     *
-     * Two reasons this matters:
-     *  1. It avoids the N+1 problem - one query for 50 vehicles, not 51.
-     *  2. spring.jpa.open-in-view=false closes the persistence context when
-     *     the service method returns, so a still-lazy category would blow up
-     *     with LazyInitializationException while Jackson builds the JSON.
-     */
+   
     @Override
     @EntityGraph(attributePaths = "category")
     List<Vehicle> findAll();
@@ -29,7 +20,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
     @EntityGraph(attributePaths = "category")
     Optional<Vehicle> findById(Integer id);
 
-    /** Proposal: "filter by category or availability status". */
+   
     @EntityGraph(attributePaths = "category")
     List<Vehicle> findByCategory_CategoryId(Integer categoryId);
 
@@ -47,7 +38,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
     boolean existsByRegistrationNumberAndVehicleIdNot(String registrationNumber, Integer vehicleId);
 
-    /** Used by CategoryService to block deleting a category still in use. */
+ 
     boolean existsByCategory_CategoryId(Integer categoryId);
 
     long countByCategory_CategoryId(Integer categoryId);
