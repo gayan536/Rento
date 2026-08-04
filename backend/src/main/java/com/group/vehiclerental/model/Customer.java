@@ -19,14 +19,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A person who rents vehicles.
- */
+
 @Entity
 @Table(name = "customer")
-// Class level, so it also applies when a lazy Customer proxy is serialised on
-// its own. Hibernate's proxy carries these two internal fields, which
-// Jackson cannot serialise.
+
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Customer {
 
@@ -40,28 +36,19 @@ public class Customer {
     @Column(name = "full_name", nullable = false, length = 100)
     private String fullName;
 
-    /** The customer's login identifier, so it is required and unique. */
+   
     @NotBlank(message = "Email is required")
     @Email(message = "Email must be a valid address")
     @Size(max = 120)
     @Column(name = "email", nullable = false, unique = true, length = 120)
     private String email;
 
-    /**
-     * BCrypt hash, never the plain password.
-     *
-     * WRITE_ONLY means Jackson will read this field from an incoming request
-     * but never write it to a response, so a password hash can never leak out
-     * of the API even if a Customer is returned directly from a controller.
-     */
+   
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password", nullable = false, length = 100)
     private String password;
 
-    /**
-     * NULL until the customer's first booking - the rent form collects the NIC
-     * and licence, so they cannot be required at sign-up.
-     */
+   
     @Size(max = 20)
     @Column(name = "nic", unique = true, length = 20)
     private String nic;
@@ -82,19 +69,11 @@ public class Customer {
     @Column(name = "registered_date", nullable = false)
     private LocalDate registeredDate;
 
-    /**
-     * File name of the customer's photo in backend/uploads/, or NULL. Same
-     * arrangement as Vehicle: the row keeps the name, never the bytes.
-     */
+   
     @Size(max = 255)
     @Column(name = "image_path", length = 255)
     private String imagePath;
 
-    /**
-     * Inverse side. mappedBy = "customer" refers to the Booking.customer field,
-     * which owns the customer_id foreign key. @JsonIgnore breaks the
-     * Customer -> Booking -> Customer serialisation cycle.
-     */
     @OneToMany(mappedBy = "customer")
     @JsonIgnore
     private List<Booking> bookings = new ArrayList<>();
@@ -115,11 +94,7 @@ public class Customer {
         this.registeredDate = registeredDate;
     }
 
-    /**
-     * The SQL column has DEFAULT (CURRENT_DATE), but Hibernate always sends the
-     * column in its INSERT, so a null here would hit the NOT NULL constraint.
-     * @PrePersist runs just before the INSERT and fills it in.
-     */
+   
     @PrePersist
     protected void onCreate() {
         if (registeredDate == null) {
