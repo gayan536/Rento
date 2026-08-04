@@ -19,8 +19,6 @@ No Docker, no external APIs, no payment gateways.
 | 5   | H.R.L Gunasekara           |    s17401        | Booking Management          |
 | 6   | A.A.T.K.P. Amarasinghe| s17212 | Payment Management     |
 
-_Fill in names and IDs before submission._
-
 ---
 
 ## Technology Stack
@@ -48,73 +46,6 @@ _Fill in names and IDs before submission._
 | Maven   | 3.8+        | `mvn -version`    |
 | MySQL   | 8+, running | `mysql --version` |
 | Node.js | 18+         | `node --version`  |
-
-Start MySQL if it is not already running:
-
-```bash
-brew services start mysql      # macOS (Homebrew)
-sudo systemctl start mysql     # Linux
-# Windows: start MySQL from XAMPP or MySQL Workbench
-```
-
----
-
-## Getting Started
-
-### 1. Create the database
-
-From the project root:
-
-```bash
-mysql -u root -p < database/schema.sql
-```
-
-This drops and recreates `vehicle_rental_db` with all six tables, foreign keys and
-constraints. Re-run it any time to reset to empty tables.
-
-### 2. Run the backend
-
-```bash
-cd backend
-mvn spring-boot:run
-```
-
-The API starts on **http://localhost:8080**. Confirm with:
-
-```bash
-curl http://localhost:8080/api/health     # -> OK
-```
-
-**Database credentials.** The app connects as `root` with an **empty** password by
-default, which is how a fresh MySQL install ships. If your MySQL root account has a
-password, do **not** edit `application.properties` — every member has different
-credentials and editing that line causes merge conflicts. Set an environment variable
-instead:
-
-```bash
-export MYSQL_PASSWORD=yourpassword     # macOS / Linux
-set MYSQL_PASSWORD=yourpassword        # Windows cmd
-```
-
-### 3. Run the frontend
-
-In a second terminal:
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Open **http://localhost:5173** and sign in:
-
-| Username | Password   |
-| -------- | ---------- |
-| `admin`  | `admin123` |
-
-> The login is a single hardcoded staff account checked in the browser, as the project
-> scope specifies. It is **not** real security — the API itself is unauthenticated.
-> Adding Spring Security was deliberately out of scope.
 
 ---
 
@@ -351,27 +282,6 @@ that origin there.
 
 **`Schema-validation: missing table` after switching `ddl-auto` to `validate`**
 The database does not match the entities. Re-run `database/schema.sql`.
-
----
-
-## Notes for the Viva
-
-A few decisions worth being able to explain:
-
-- **`FetchType.LAZY` on every `@ManyToOne`.** The default is `EAGER`, which fires an extra
-  query per row — listing 50 vehicles becomes 51 queries (the N+1 problem). Repository
-  finders use `@EntityGraph` to fetch what each screen needs in a single query.
-- **`mappedBy` marks the non-owning side.** The owning side is the one with
-  `@ManyToOne` + `@JoinColumn`, and it is the only side Hibernate writes to the database.
-- **`BigDecimal` for money, never `double`.** Binary floating point cannot represent 0.1
-  exactly, so totals would drift.
-- **Status fields are `String` with a `CHECK` constraint**, not enums — simpler to explain,
-  and adding a status later is a plain `ALTER`.
-- **Request DTOs for Vehicle, Booking and Payment.** Any module whose table has a foreign
-  key takes plain ids from the browser instead of nested objects.
-- **`spring.jpa.hibernate.ddl-auto=update`** lets Hibernate adjust tables to match the
-  entities during development. Once the schema is stable, switch to `validate` so
-  Hibernate checks against `schema.sql` rather than quietly reshaping it.
 
 ---
 
