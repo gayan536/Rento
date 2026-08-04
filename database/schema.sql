@@ -1,4 +1,4 @@
-﻿-- Vehicle rental database schema scaffold
+﻿
 CREATE TABLE IF NOT EXISTS customers (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
