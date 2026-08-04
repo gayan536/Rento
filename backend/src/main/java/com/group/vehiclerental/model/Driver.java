@@ -18,14 +18,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A driver who can be assigned to a "with driver" rental.
- */
+
 @Entity
 @Table(name = "driver")
-// Class level, so it also applies when a lazy Driver proxy is serialised on
-// its own. Hibernate's proxy carries these two internal fields, which
-// Jackson cannot serialise.
+
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Driver {
 
@@ -54,23 +50,17 @@ public class Driver {
     @Column(name = "phone", nullable = false, length = 20)
     private String phone;
 
-    /**
-     * @PositiveOrZero rather than @Positive: a driver on a flat salary may have
-     * a zero per-day charge, and the SQL CHECK allows daily_charge >= 0.
-     */
+  
     @NotNull(message = "Daily charge is required")
     @PositiveOrZero(message = "Daily charge cannot be negative")
     @Column(name = "daily_charge", nullable = false, precision = 10, scale = 2)
     private BigDecimal dailyCharge = BigDecimal.ZERO;
 
-    /**
-     * Primitive boolean, not Boolean - the column is NOT NULL, so there is no
-     * meaningful "unknown" state and a primitive cannot accidentally be null.
-     */
+   
     @Column(name = "available", nullable = false)
     private boolean available = true;
 
-    /** Inverse side - Booking.driver owns the nullable driver_id column. */
+    
     @OneToMany(mappedBy = "driver")
     @JsonIgnore
     private List<Booking> bookings = new ArrayList<>();
