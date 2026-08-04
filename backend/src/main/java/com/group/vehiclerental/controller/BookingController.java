@@ -21,19 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Module 5 - Booking Management.
- *
- * GET    /api/bookings                          list, or ?status=ACTIVE
- *                                               or ?from=2026-08-01&to=2026-08-31
- * GET    /api/bookings/{id}                     one booking with its payments
- * GET    /api/bookings/customer/{customerId}    a customer's rental history
- * GET    /api/bookings/vehicle/{vehicleId}      a vehicle's booking history
- * POST   /api/bookings                          create (total calculated here)
- * PUT    /api/bookings/{id}                     update dates / extend
- * PATCH  /api/bookings/{id}/status              change status only
- * DELETE /api/bookings/{id}                     cancel and remove
- */
+
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
