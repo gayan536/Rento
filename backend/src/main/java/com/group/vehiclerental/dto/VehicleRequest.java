@@ -6,15 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-/**
- * What the React vehicle form sends.
- *
- * The rule across this project: a module whose table has a foreign key takes a
- * request DTO carrying plain ids, so the frontend posts
- *   { "categoryId": 1, ... }
- * instead of the awkward nested { "category": { "categoryId": 1 }, ... }.
- * The service turns the id into a real Category before saving.
- */
+
 public class VehicleRequest {
 
     @NotBlank(message = "Registration number is required")
@@ -31,16 +23,16 @@ public class VehicleRequest {
     @Max(value = 2100, message = "Year must be 2100 or earlier")
     private Integer year;
 
-    /** PETROL, DIESEL, HYBRID, ELECTRIC */
+  
     private String fuelType;
 
-    /** MANUAL, AUTOMATIC */
+   
     private String transmission;
 
     @NotNull(message = "Category is required")
     private Integer categoryId;
 
-    /** AVAILABLE, RENTED, MAINTENANCE - defaults to AVAILABLE when left out. */
+    
     private String status;
 
     public VehicleRequest() {
