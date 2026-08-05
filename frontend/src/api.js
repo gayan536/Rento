@@ -1,23 +1,10 @@
 import axios from 'axios'
 
-/**
- * One Axios instance for the whole app. Every module imports from here, so the
- * backend URL is written down exactly once.
- */
 const http = axios.create({
   baseURL: 'http://localhost:8080/api',
   headers: { 'Content-Type': 'application/json' },
 })
 
-/**
- * Turns whatever the backend threw into a message we can show the user.
- *
- * GlobalExceptionHandler always replies in the same shape:
- *   { timestamp, status, error, message, fieldErrors? }
- *
- * Returns { message, fieldErrors } so a form can show the general message at
- * the top and the per-field ones under each input.
- */
 export function parseError(err) {
   const data = err?.response?.data
   if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
@@ -40,39 +27,27 @@ export function parseError(err) {
 
 const body = (res) => res.data
 
-/** Where the Spring Boot server lives, for images served outside /api. */
 export const SERVER_URL = 'http://localhost:8080'
 
-/**
- * Full URL of a vehicle photo, or null when the vehicle has none.
- * The backend stores only the file name and serves the file from /uploads.
- */
 export function vehicleImageUrl(vehicle) {
   return vehicle?.imagePath ? `${SERVER_URL}/uploads/${vehicle.imagePath}` : null
 }
 
-/** Same folder, same arrangement - customers keep a photo too. */
 export function customerImageUrl(customer) {
   return customer?.imagePath ? `${SERVER_URL}/uploads/${customer.imagePath}` : null
 }
 
-/* ------------------------------------------------------------------ */
-/*  Public authentication - customers only                            */
-/* ------------------------------------------------------------------ */
 export const authApi = {
   signup: (data) => http.post('/auth/signup', data).then(body),
   login: (data) => http.post('/auth/login', data).then(body),
 }
 
-/* ------------------------------------------------------------------ */
-/*  Module 1 - Customers                                              */
-/* ------------------------------------------------------------------ */
 export const customerApi = {
   list: (search) => http.get('/customers', { params: search ? { search } : {} }).then(body),
   get: (id) => http.get(`/customers/${id}`).then(body),
-  // No create() on purpose - customers sign up via authApi.signup.
+  
   update: (id, data) => http.put(`/customers/${id}`, data).then(body),
-  /** Multipart, like the vehicle one - see vehicleApi.uploadPhoto. */
+  
   uploadPhoto: (id, file) => {
     const form = new FormData()
     form.append('file', file)
@@ -85,9 +60,6 @@ export const customerApi = {
   count: () => http.get('/customers/count').then(body),
 }
 
-/* ------------------------------------------------------------------ */
-/*  Module 2 - Categories                                             */
-/* ------------------------------------------------------------------ */
 export const categoryApi = {
   list: (search) => http.get('/categories', { params: search ? { search } : {} }).then(body),
   get: (id) => http.get(`/categories/${id}`).then(body),
@@ -97,11 +69,8 @@ export const categoryApi = {
   count: () => http.get('/categories/count').then(body),
 }
 
-/* ------------------------------------------------------------------ */
-/*  Module 3 - Vehicles                                               */
-/* ------------------------------------------------------------------ */
 export const vehicleApi = {
-  /** Filtering and free-text search are different endpoints on the backend. */
+  
   list: ({ categoryId, status } = {}) => {
     const params = {}
     if (categoryId) params.categoryId = categoryId
@@ -113,11 +82,7 @@ export const vehicleApi = {
   create: (data) => http.post('/vehicles', data).then(body),
   update: (id, data) => http.put(`/vehicles/${id}`, data).then(body),
   setStatus: (id, status) => http.patch(`/vehicles/${id}/status`, null, { params: { status } }).then(body),
-  /**
-   * Photo upload. FormData - not JSON - because a file cannot be sent as JSON.
-   * Axios sets the multipart Content-Type (with its boundary) automatically,
-   * so we clear the instance's application/json header for this one call.
-   */
+  
   uploadPhoto: (id, file) => {
     const form = new FormData()
     form.append('file', file)
@@ -130,9 +95,6 @@ export const vehicleApi = {
   count: (status) => http.get('/vehicles/count', { params: status ? { status } : {} }).then(body),
 }
 
-/* ------------------------------------------------------------------ */
-/*  Module 4 - Drivers                                                */
-/* ------------------------------------------------------------------ */
 export const driverApi = {
   list: (available) =>
     http.get('/drivers', { params: available === undefined || available === '' ? {} : { available } }).then(body),
@@ -146,9 +108,6 @@ export const driverApi = {
   count: () => http.get('/drivers/count').then(body),
 }
 
-/* ------------------------------------------------------------------ */
-/*  Module 5 - Bookings                                               */
-/* ------------------------------------------------------------------ */
 export const bookingApi = {
   list: ({ status, from, to } = {}) => {
     const params = {}
@@ -166,9 +125,6 @@ export const bookingApi = {
   count: (status) => http.get('/bookings/count', { params: status ? { status } : {} }).then(body),
 }
 
-/* ------------------------------------------------------------------ */
-/*  Module 6 - Payments                                               */
-/* ------------------------------------------------------------------ */
 export const paymentApi = {
   list: () => http.get('/payments').then(body),
   get: (id) => http.get(`/payments/${id}`).then(body),
@@ -180,10 +136,6 @@ export const paymentApi = {
   count: () => http.get('/payments/count').then(body),
 }
 
-/* ------------------------------------------------------------------ */
-/*  Shared option lists - these mirror the CHECK constraints in the    */
-/*  SQL schema and the ALLOWED_* sets in the services.                 */
-/* ------------------------------------------------------------------ */
 export const VEHICLE_STATUSES = ['AVAILABLE', 'RENTED', 'MAINTENANCE']
 export const FUEL_TYPES = ['PETROL', 'DIESEL', 'HYBRID', 'ELECTRIC']
 export const TRANSMISSIONS = ['MANUAL', 'AUTOMATIC']
@@ -191,13 +143,11 @@ export const BOOKING_STATUSES = ['PENDING', 'ACTIVE', 'COMPLETED', 'CANCELLED']
 export const PAYMENT_METHODS = ['CASH', 'CARD', 'BANK_TRANSFER']
 export const PAYMENT_TYPES = ['ADVANCE', 'FULL', 'BALANCE']
 
-/** Rupee formatting used by every table and summary. */
 export function money(value) {
   const n = Number(value ?? 0)
   return 'Rs. ' + n.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-/** Maps a status string to one of the badge classes in styles.css. */
 export function statusClass(status) {
   switch (status) {
     case 'AVAILABLE':
