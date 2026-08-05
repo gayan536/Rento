@@ -23,7 +23,6 @@ import java.util.Set;
 @Transactional
 public class PaymentService {
 
-    /** Matches the SQL CHECKs on payment.payment_method and payment.payment_type. */
     public static final Set<String> ALLOWED_METHODS = Set.of("CASH", "CARD", "BANK_TRANSFER");
     public static final Set<String> ALLOWED_TYPES = Set.of("ADVANCE", "FULL", "BALANCE");
 
@@ -47,14 +46,12 @@ public class PaymentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Payment", id));
     }
 
-    /** Proposal: "view payments for one booking". */
     @Transactional(readOnly = true)
     public List<Payment> findByBooking(Integer bookingId) {
         requireBooking(bookingId);
         return paymentRepository.findByBooking_BookingId(bookingId);
     }
 
-    /** Proposal: "show balance due". */
     @Transactional(readOnly = true)
     public BookingBalanceResponse getBalance(Integer bookingId) {
         Booking booking = requireBooking(bookingId);
@@ -90,13 +87,11 @@ public class PaymentService {
         return paymentRepository.save(payment);
     }
 
-    /** Proposal: "Correct a payment amount or method". */
     public Payment update(Integer id, PaymentRequest request) {
         Payment existing = findById(id);
         Booking booking = requireBooking(request.getBookingId());
         validateMethodAndType(request.getPaymentMethod(), request.getPaymentType());
 
-        // Everything paid against the booking except this payment.
         BigDecimal otherPayments = paymentRepository
                 .sumAmountByBookingId(booking.getBookingId())
                 .subtract(existing.getBooking().getBookingId().equals(booking.getBookingId())
@@ -118,7 +113,6 @@ public class PaymentService {
         return paymentRepository.save(existing);
     }
 
-    /** Proposal: "Remove an incorrectly entered payment". */
     public void delete(Integer id) {
         Payment payment = findById(id);
         paymentRepository.delete(payment);
