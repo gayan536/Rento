@@ -43,7 +43,6 @@ export default function PaymentForm() {
       .finally(() => setLoading(false))
   }, [id])
 
-  // Whenever a booking is chosen, show what is still owed on it.
   useEffect(() => {
     if (!form.bookingId) { setBalance(null); return }
     paymentApi.balance(form.bookingId).then(setBalance).catch(() => setBalance(null))
