@@ -12,7 +12,7 @@ No Docker, no external APIs, no payment gateways.
 
 | #   | Student Name | Student ID | Module                      |
 | --- | ------------ | ---------- | --------------------------- |
-| 1   |              |            | Customer Management         |
+| 1   | U.G.K.Gayan |s17238 | Customer Management         |
 | 2   | H.A.Soysa             | s17281           | Vehicle Category Management |
 | 3   | V.G.Kavinu Riveen              |      s17266      | Vehicle Management          |
 | 4   |              |            | Driver Management           |
